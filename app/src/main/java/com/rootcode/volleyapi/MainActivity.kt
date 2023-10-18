@@ -3,6 +3,8 @@ package com.rootcode.volleyapi
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -16,19 +18,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        val recycalerview = findViewById<RecyclerView>(R.id.recicalerview)
         val stringRequest = StringRequest(url,
             Response.Listener {
-                              val gsonBuilder = GsonBuilder()
+                val gsonBuilder = GsonBuilder()
                 val gson = gsonBuilder.create()
-                userInfoItem = gson.fromJson(it,Array<UserInfoItem>::class.java)
+                userInfoItem = gson.fromJson(it, Array<UserInfoItem>::class.java)
                 userInfoItem.forEach {
                     userInfo.add(it)
                 }
-                Toast.makeText(this, userInfo.toString(),Toast.LENGTH_SHORT).show()
+                val adapter = Adapter(this, userInfo)
+                recycalerview.layoutManager = LinearLayoutManager(this)
+                recycalerview.adapter = adapter
             },
             Response.ErrorListener {
-                Toast.makeText(this,"Something Worng"+it.toString(),Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Something Worng" + it.toString(), Toast.LENGTH_SHORT).show()
             }
         )
         val volley = Volley.newRequestQueue(this)
